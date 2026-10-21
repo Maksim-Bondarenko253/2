@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" >
+    <meta name="viewport" content="width=device-width, initial-scale=1" >
+    <title>Orbit Dashboard — панель компонентов</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" >
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin >
+    <link       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    >
+    <style>
+*,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+      body,
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6,
+      p,
+      ul,
+      ol,
+      figure,
+      blockquote {
+        margin: 0;
+        padding: 0;
+      }
+      ul,
+      ol {
+        list-style: none;
+      }
+      img,
+      video,
+      svg {
+        display: block;
+        max-width: 100%;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+      :root {
+        --color-bg: #071321;
+        --color-text: #e7f2fb;
+        --color-accent: #45b5e9;
+        --color-surface: #102235;
+        --color-border: #24425a;
+        --color-muted: #88a2b8;
+        --color-good: #57d3a0;
+        --color-warn: #f6c768;
+        --color-danger: #ef8d9d;
+        --space-xs: 0.5rem;
+        --space-sm: 0.75rem;
+        --space-md: 1rem;
+        --space-lg: 1.5rem;
+        --space-xl: 2.5rem;
+        --radius: 14px;
+        --font-body: "Inter", sans-serif;
+        --font-mono: ui-monospace, SFMono-Regular, Consolas, monospace;
+        --z-top: 10;
+      }
+      html,
+      body {
+        width: 100%;
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        overflow-x: hidden;
+        background: var(--color-bg);
+        color: var(--color-text);
+        font-family: var(--font-body);
+        line-height: 1.6;
+      }
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        opacity: 0.22;
+        background-image:
+          linear-gradient(var(--color-border) 1px, transparent 1px),
+          linear-gradient(90deg, var(--color-border) 1px, transparent 1px);
+        background-size: 42px 42px;
+        mask-image: linear-gradient(to bottom, #000, transparent 78%);
+      }
+      .container {
+        width: 100%;
+        max-width: 1440px;
+        margin-inline: auto;
+        padding-inline: clamp(1rem, 4vw, 2.5rem);
+      }
+      header {
+        position: relative;
+        z-index: var(--z-top);
+        border-bottom: 1px solid var(--color-border);
+        background: var(--color-bg);
+      }
+      .topbar {
+        min-height: 76px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-md);
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-weight: 700;
+        letter-spacing: -0.03em;
+      }
+      .brand-mark {
+        width: 36px;
+        height: 36px;
+        display: grid;
+        place-items: center;
+        border: 1px solid var(--color-accent);
+        border-radius: 10px;
+        color: var(--color-accent);
+        font-size: 0.8rem;
+      }
+      .brand small {
+        display: block;
+        color: var(--color-muted);
+        font-size: 0.68rem;
+        font-weight: 500;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+      .status {
+        color: var(--color-good);
+        font-size: 0.8rem;
+        display: flex;
+        gap: 0.45rem;
+        align-items: center;
+        white-space: nowrap;
+      }
+      .status::before {
+        content: "";
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--color-good);
+        box-shadow: 0 0 12px var(--color-good);
+      }
+      main {
+        position: relative;
+        padding-block: clamp(2rem, 5vw, 4.5rem);
+      }
+      .intro {
+        margin-bottom: var(--space-xl);
+      }
+      .eyebrow,
+      .metric-label,
+      .api-label {
+        color: var(--color-accent);
+        font-size: 0.7rem;
+        font-weight: 600;
+        letter-spacing: 0.13em;
+        text-transform: uppercase;
+      }
+      h1 {
+        max-width: 850px;
+        margin-top: 0.7rem;
+        font-size: clamp(2.2rem, 5vw, 4.7rem);
+        line-height: 1.05;
+        letter-spacing: -0.065em;
+      }
+      .lede {
+        max-width: 700px;
+        margin-top: var(--space-lg);
+        color: var(--color-muted);
+        font-size: clamp(1rem, 1.5vw, 1.15rem);
+      }
+      .toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: var(--space-sm);
+        padding: 0.8rem;
+        margin-bottom: var(--space-lg);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius);
+        background: rgba(16, 34, 53, 0.72);
+      }
+      button {
+        min-height: 44px;
+        border: 1px solid var(--color-border);
+        border-radius: 9px;
+        padding: 0.65rem 0.95rem;
+        background: var(--color-surface);
+        color: var(--color-text);
+        font: inherit;
+        font-size: 0.88rem;
+        cursor: pointer;
+        transition: 0.2s ease;
+      }
+      button:hover {
+        border-color: var(--color-accent);
+        color: var(--color-accent);
+        transform: translateY(-1px);
+      }
+      button.primary {
+        background: var(--color-accent);
+        border-color: var(--color-accent);
+        color: var(--color-bg);
+        font-weight: 700;
+      }
+      button.primary:hover {
+        color: var(--color-bg);
+        filter: brightness(1.1);
+      }
+      button:focus-visible,
+      input:focus-visible {
+        outline: 2px solid var(--color-accent);
+        outline-offset: 2px;
+      }
+      .toolbar-note {
+        margin-left: auto;
+        color: var(--color-muted);
+        font-size: 0.78rem;
+      }
+      .dashboard {
+        display: grid;
+        grid-template-columns: repeat(12, minmax(0, 1fr));
+        gap: var(--space-md);
+      }
+      .widget {
+        grid-column: span 4;
+        min-width: 0;
+        overflow: hidden;
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius);
+        background: linear-gradient(145deg, var(--color-surface), var(--color-bg));
+        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.16);
+      }
+      .widget.wide {
+        grid-column: span 8;
+      }
+      .widget-head {
+        display: flex;
+        align-items: start;
+        justify-content: space-between;
+        gap: var(--space-sm);
+        padding: var(--space-md) var(--space-lg);
+        border-bottom: 1px solid var(--color-border);
+      }
+      .widget-title {
+        font-size: 1rem;
+        font-weight: 600;
+      }
+      .widget-meta {
+        color: var(--color-muted);
+        font-size: 0.72rem;
+      }
+      .icon-button {
+        min-height: 32px;
+        padding: 0.2rem 0.5rem;
+        color: var(--color-muted);
+        background: transparent;
+        border: 0;
+      }
+      .widget-body {
+        padding: var(--space-lg);
+      }
+      .api-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-md);
+      }
+      .api-source {
+        color: var(--color-muted);
+        font-family: var(--font-mono);
+        font-size: 0.68rem;
+      }
+      .metric {
+        display: flex;
+        justify-content: space-between;
+        align-items: end;
+        gap: var(--space-md);
+      }
+      .metric strong {
+        display: block;
+        margin-top: 0.25rem;
+        font-size: clamp(1.8rem, 4vw, 2.7rem);
+        line-height: 1;
+        letter-spacing: -0.06em;
+      }
+      .delta {
+        color: var(--color-good);
+        font-size: 0.8rem;
+        font-weight: 600;
+      }
+      .chart {
+        display: flex;
+        align-items: end;
+        gap: 7px;
+        height: 110px;
+        margin-top: var(--space-lg);
+        padding-top: 10px;
+        border-bottom: 1px solid var(--color-border);
+      }
+      .bar {
+        flex: 1;
+        min-width: 8px;
+        border-radius: 4px 4px 0 0;
+        background: var(--color-accent);
+        opacity: 0.9;
+      }
+      .bar:nth-child(1) {
+        height: 35%;
+      }
+      .bar:nth-child(2) {
+        height: 50%;
+      }
+      .bar:nth-child(3) {
+        height: 42%;
+      }
+      .bar:nth-child(4) {
+        height: 68%;
+      }
+      .bar:nth-child(5) {
+        height: 57%;
+      }
+      .bar:nth-child(6) {
+        height: 78%;
+      }
+      .bar:nth-child(7) {
+        height: 91%;
+      }
+      .bar:nth-child(8) {
+        height: 74%;
+      }
+      .bar:nth-child(9) {
+        height: 98%;
+      }
+      .bar:nth-child(10) {
+        height: 86%;
+      }
+      .axis {
+        display: flex;
+        justify-content: space-between;
+        color: var(--color-muted);
+        font-size: 0.68rem;
+        margin-top: 0.5rem;
+      }
+      .air-value {
+        display: flex;
+        align-items: baseline;
+        gap: 0.6rem;
+        margin: 0.7rem 0 1rem;
+      }
+      .air-value strong {
+        font-size: 2.6rem;
+        line-height: 1;
+        letter-spacing: -0.07em;
+      }
+      .air-value span {
+        color: var(--color-good);
+        font-size: 0.8rem;
+      }
+      .meter {
+        height: 8px;
+        overflow: hidden;
+        border-radius: 4px;
+        background: var(--color-bg);
+      }
+      .meter i {
+        display: block;
+        width: 28%;
+        height: 100%;
+        border-radius: inherit;
+        background: var(--color-good);
+      }
+      .air-grid,
+      .mini-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.8rem;
+        margin-top: var(--space-lg);
+      }
+      .air-grid b,
+      .mini-grid b {
+        display: block;
+        font-size: 0.95rem;
+      }
+      .air-grid small,
+      .mini-grid small {
+        color: var(--color-muted);
+        font-size: 0.68rem;
+      }
+      .todo-form {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: var(--space-md);
+      }
+      input {
+        width: 100%;
+        min-width: 0;
+        min-height: 44px;
+        border: 1px solid var(--color-border);
+        border-radius: 8px;
+        padding: 0.65rem 0.8rem;
+        background: var(--color-bg);
+        color: var(--color-text);
+        font: inherit;
+      }
+      .todo-list {
+        display: grid;
+        gap: 0.55rem;
+      }
+      .todo-item {
+        display: flex;
+        align-items: center;
+        gap: 0.65rem;
+        padding: 0.65rem;
+        border: 1px solid var(--color-border);
+        border-radius: 8px;
+        color: var(--color-text);
+        font-size: 0.85rem;
+      }
+      .todo-item.done span {
+        color: var(--color-muted);
+        text-decoration: line-through;
+      }
+      .todo-item input {
+        width: 17px;
+        min-height: 17px;
+        accent-color: var(--color-accent);
+      }
+      .todo-item button {
+        min-height: 28px;
+        margin-left: auto;
+        padding: 0.1rem 0.4rem;
+        border: 0;
+        background: transparent;
+        color: var(--color-muted);
+      }
+      .quote {
+        margin: var(--space-lg) 0;
+        color: var(--color-text);
+        font-size: 1.1rem;
+        line-height: 1.5;
+      }
+      .quote::before {
+        content: "“";
+        color: var(--color-accent);
+        font-size: 2rem;
+        line-height: 0;
+        vertical-align: -0.45rem;
+        margin-right: 0.25rem;
+      }
+      .author {
+        color: var(--color-muted);
+        font-size: 0.8rem;
+      }
+      .progress {
+        height: 9px;
+        overflow: hidden;
+        border-radius: 5px;
+        background: var(--color-bg);
+        margin: var(--space-lg) 0 0.65rem;
+      }
+      .progress i {
+        display: block;
+        width: 72%;
+        height: 100%;
+        background: var(--color-accent);
+        border-radius: inherit;
+      }
+      .activity {
+        display: grid;
+        gap: 0.8rem;
+      }
+      .activity li {
+        display: flex;
+        justify-content: space-between;
+        gap: var(--space-sm);
+        padding-bottom: 0.7rem;
+        border-bottom: 1px solid var(--color-border);
+        font-size: 0.84rem;
+      }
+      .activity small {
+        color: var(--color-muted);
+        white-space: nowrap;
+      }
+      .latency {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: var(--space-md);
+      }
+      .latency strong {
+        font-size: 2.7rem;
+        line-height: 1;
+        letter-spacing: -0.06em;
+      }
+      .good {
+        color: var(--color-good);
+      }
+      .warn {
+        color: var(--color-warn);
+      }
+      footer {
+        padding-block: var(--space-xl);
+        color: var(--color-muted);
+        font-size: 0.78rem;
+      }
+      @media (max-width: 900px) {
+        .widget,
+        .widget.wide {
+          grid-column: span 6;
+        }
+      }
+      @media (max-width: 600px) {
+        .topbar {
+          align-items: flex-start;
+          padding-block: 1rem;
+        }
+        .status {
+          font-size: 0.7rem;
+        }
+        .toolbar-note {
+          width: 100%;
+          margin-left: 0;
+        }
+        .widget,
+        .widget.wide {
+          grid-column: 1/-1;
+        }
+        .todo-form {
+          flex-direction: column;
+        }
+        .intro {
+          margin-bottom: var(--space-lg);
+        }
+      }
+</style>
+  </head>
+  <body>
+    <header>
+      <div class="container topbar">
+        <div class="brand">
+          <span class="brand-mark">//</span>
+          <div>ORBIT <small>component lab</small></div>
+        </div>
+        <div class="status">демо-режим · данные синхронизированы</div>
+      </div>
+    </header>
+    <main class="container">
+      <section class="intro" aria-labelledby="page-title">
+        <p class="eyebrow">учебный dashboard / oop playground</p>
+        <h1 id="page-title">Рабочая панель, собранная из компонентов.</h1>
+        <p class="lede">
+          Интерактивная демонстрация независимых аналитических виджетов. Добавляйте блоки,
+          управляйте задачами и наблюдайте за состоянием каждого экземпляра.
+        </p>
+      </section>
+      <section aria-label="Панель управления">
+        <div class="toolbar">
+          <button class="primary" data-add="todo">＋ Добавить ToDo</button><button data-add="quote">＋ Добавить Quote</button><button data-add="stocks">＋ Добавить Stocks API</button><button data-add="air">＋ Добавить Air API</button><span class="toolbar-note">dashboard.widgets: <b id="widget-count">7</b></span>
+        </div>
+        <div class="dashboard" id="dashboard">
+          <article class="widget wide" data-id="stocks-main">
+            <div class="widget-head">
+              <div>
+                <div class="widget-title">Рыночная динамика</div>
+                <div class="widget-meta">AAPL · последние 10 сессий</div>
+              </div>
+              <button class="icon-button remove" aria-label="Удалить виджет">×</button>
+            </div>
+            <div class="widget-body">
+              <div class="api-head">
+                <span class="api-label">Alpha Vantage API</span><span class="api-source">external / demo snapshot</span>
+              </div>
+              <div class="metric">
+                <div><span class="metric-label">Цена закрытия</span><strong>$189.84</strong></div>
+                <span class="delta">↗ 2.48%</span>
+              </div>
+              <div class="chart" aria-label="График изменения цены">
+                <i class="bar"></i><i class="bar"></i><i class="bar"></i><i class="bar"></i><i class="bar"></i><i class="bar"></i><i class="bar"></i><i class="bar"></i><i class="bar"></i><i class="bar"></i>
+              </div>
+              <div class="axis"><span>05 июн</span><span>14 июн</span></div>
+            </div>
+          </article>
+          <article class="widget" data-id="air-main">
+            <div class="widget-head">
+              <div>
+                <div class="widget-title">Качество воздуха</div>
+                <div class="widget-meta">Москва · 12:40 MSK</div>
+              </div>
+              <button class="icon-button remove" aria-label="Удалить виджет">×</button>
+            </div>
+            <div class="widget-body">
+              <div class="api-head">
+                <span class="api-label">Open-Meteo API</span><span class="api-source">live-ready</span>
+              </div>
+              <div class="air-value"><strong>18</strong><span>● хорошее</span></div>
+              <div class="meter"><i></i></div>
+              <div class="air-grid">
+                <div><b>12 μg</b><small>PM2.5</small></div>
+                <div><b>24 μg</b><small>PM10</small></div>
+                <div><b>42%</b><small>влажность</small></div>
+              </div>
+            </div>
+          </article>
+          <article class="widget" data-id="todo-main">
+            <div class="widget-head">
+              <div>
+                <div class="widget-title">Фокус на сегодня</div>
+                <div class="widget-meta">ToDoWidget · 2 из 3</div>
+              </div>
+              <button class="icon-button remove" aria-label="Удалить виджет">×</button>
+            </div>
+            <div class="widget-body">
+              <form class="todo-form">
+                <label class="sr-only" for="task-input">Новая задача</label><input id="task-input" placeholder="Добавить задачу…" ><button                   class="primary"
+                  type="submit"
+                >
+                  Добавить
+                </button>
+              </form>
+              <ul class="todo-list">
+                <li class="todo-item done">
+                  <input type="checkbox" checked aria-label="Выполнено" ><span                     >Проверить API-виджеты</span><button type="button" aria-label="Удалить задачу">×</button>
+                </li>
+                <li class="todo-item done">
+                  <input type="checkbox" checked aria-label="Выполнено" ><span                     >Описать метод destroy()</span><button type="button" aria-label="Удалить задачу">×</button>
+                </li>
+                <li class="todo-item">
+                  <input type="checkbox" aria-label="Выполнено" ><span                     >Добавить новый компонент</span><button type="button" aria-label="Удалить задачу">×</button>
+                </li>
+              </ul>
+            </div>
+          </article>
+          <article class="widget" data-id="quote-main">
+            <div class="widget-head">
+              <div>
+                <div class="widget-title">Мысль дня</div>
+                <div class="widget-meta">QuoteWidget · локальный массив</div>
+              </div>
+              <button class="icon-button remove" aria-label="Удалить виджет">×</button>
+            </div>
+            <div class="widget-body">
+              <blockquote class="quote">Простота — это высшая степень утончённости.</blockquote>
+              <p class="author">Леонардо да Винчи</p>
+              <button class="refresh" type="button">Обновить цитату ↻</button>
+            </div>
+          </article>
+          <article class="widget" data-id="release-main">
+            <div class="widget-head">
+              <div>
+                <div class="widget-title">Состояние релиза</div>
+                <div class="widget-meta">pipeline · v2.8.4</div>
+              </div>
+              <button class="icon-button remove" aria-label="Удалить виджет">×</button>
+            </div>
+            <div class="widget-body">
+              <div class="metric">
+                <div><span class="metric-label">Готовность</span><strong>72%</strong></div>
+                <span class="good">стабильно</span>
+              </div>
+              <div class="progress"><i></i></div>
+              <div class="mini-grid">
+                <div><b>18</b><small>коммитов</small></div>
+                <div><b>4</b><small>проверки</small></div>
+                <div><b>0</b><small>ошибок</small></div>
+              </div>
+            </div>
+          </article>
+          <article class="widget" data-id="latency-main">
+            <div class="widget-head">
+              <div>
+                <div class="widget-title">Задержка сервисов</div>
+                <div class="widget-meta">edge region · EU-CENTRAL</div>
+              </div>
+              <button class="icon-button remove" aria-label="Удалить виджет">×</button>
+            </div>
+            <div class="widget-body">
+              <div class="latency">
+                <div>
+                  <span class="metric-label">Среднее время ответа</span><strong>86 ms</strong>
+                </div>
+                <span class="good">−12 ms</span>
+              </div>
+              <div class="mini-grid">
+                <div><b class="good">42 ms</b><small>API</small></div>
+                <div><b>91 ms</b><small>DB</small></div>
+                <div><b class="warn">126 ms</b><small>assets</small></div>
+              </div>
+            </div>
+          </article>
+          <article class="widget" data-id="activity-main">
+            <div class="widget-head">
+              <div>
+                <div class="widget-title">Последняя активность</div>
+                <div class="widget-meta">event stream · realtime</div>
+              </div>
+              <button class="icon-button remove" aria-label="Удалить виджет">×</button>
+            </div>
+            <div class="widget-body">
+              <ul class="activity">
+                <li><span>Виджет Stocks обновлён</span><small>2 мин</small></li>
+                <li><span>Добавлен новый компонент</span><small>14 мин</small></li>
+                <li><span>Синхронизация завершена</span><small>31 мин</small></li>
+                <li><span>Сессия разработчика начата</span><small>1 ч</small></li>
+              </ul>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+    <footer class="container">
+      ES6+ / модульная архитектура · UIComponent → Widget → Dashboard
+    </footer>
+    <script>
+const dashboard = document.querySelector("#dashboard");
+      const count = document.querySelector("#widget-count");
+      const updateCount = () => {
+        if (count) count.textContent = document.querySelectorAll(".widget").length;
+      };
+      const titles = {
+        todo: "Новый список дел",
+        quote: "Новая мысль",
+        stocks: "Котировки акций",
+        air: "Качество воздуха",
+      };
+      function addWidget(type) {
+        const id = type + "-" + Date.now();
+        const card = document.createElement("article");
+        card.className = "widget";
+        card.dataset.id = id;
+        card.innerHTML =
+          '<div class="widget-head"><div><div class="widget-title">' +
+          titles[type] +
+          '</div><div class="widget-meta">динамически добавлено</div></div><button class="icon-button remove" aria-label="Удалить виджет">×</button></div><div class="widget-body"><p class="widget-meta">Экземпляр создан через Dashboard.addWidget("' +
+          type +
+          '").</p></div>';
+        dashboard.append(card);
+        updateCount();
+      }
+      document
+        .querySelectorAll("[data-add]")
+        .forEach((button) => button.addEventListener("click", () => addWidget(button.dataset.add)));
+      dashboard.addEventListener("click", (event) => {
+        const remove = event.target.closest(".remove");
+        if (remove) {
+          remove.closest(".widget").remove();
+          updateCount();
+        }
+        const refresh = event.target.closest(".refresh");
+        if (refresh) {
+          const quotes = [
+            ["Сначала организуйте работу, затем ускоряйте её.", "Питер Друкер"],
+            ["Большие дела начинаются с маленьких шагов.", "Джеймс Клир"],
+            ["Простота — это высшая степень утончённости.", "Леонардо да Винчи"],
+          ];
+          const next = quotes[Math.floor(Math.random() * quotes.length)];
+          refresh.parentElement.querySelector(".quote").textContent = next[0];
+          refresh.parentElement.querySelector(".author").textContent = next[1];
+        }
+      });
+      const form = document.querySelector(".todo-form");
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const input = document.querySelector("#task-input");
+        if (!input.value.trim()) return;
+        const li = document.createElement("li");
+        li.className = "todo-item";
+        li.innerHTML =
+          '<input type="checkbox" aria-label="Выполнено"><span></span><button type="button" aria-label="Удалить задачу">×</button>';
+        li.querySelector("span").textContent = input.value.trim();
+        li.querySelector("input").addEventListener("change", (e) =>
+          li.classList.toggle("done", e.target.checked),
+        );
+        li.querySelector("button").addEventListener("click", () => li.remove());
+        document.querySelector(".todo-list").append(li);
+        input.value = "";
+      });
+      document.querySelectorAll(".todo-item").forEach((item) => {
+        item
+          .querySelector("input")
+          .addEventListener("change", (e) => item.classList.toggle("done", e.target.checked));
+        item.querySelector("button").addEventListener("click", () => item.remove());
+      });
+</script>
+  </body>
+</html>
